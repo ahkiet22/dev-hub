@@ -1,0 +1,53 @@
+{
+  "name": "dev-hub",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "db:migrate": "tsx scripts/migrate.ts up",
+    "db:migrate:up": "tsx scripts/migrate.ts up",
+    "db:migrate:down": "tsx scripts/migrate.ts down",
+    "db:migrate:status": "tsx scripts/migrate.ts status",
+    "db:seed": "tsx scripts/seed.ts",
+    "worker:health": "tsx src/workers/health.worker.ts"
+  },
+  "dependencies": {
+    "@module-federation/enhanced": "^2.9.3",
+    "@node-rs/argon2": "^2.0.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
+    "lucide-react": "^0.475.0",
+    "next": "^15.3.0",
+    "next-themes": "^0.4.6",
+    "pg": "^8.14.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^3.11.0",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.0.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.7",
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/postcss": "^4.0.14",
+    "@types/node": "^22.13.10",
+    "@types/pg": "^8.11.11",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "eslint": "^9.22.0",
+    "eslint-config-next": "^15.3.0",
+    "tailwindcss": "^4.0.14",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
+  }
+}
