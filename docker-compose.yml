@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-admin}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-admin}
+      POSTGRES_DB: ${DATABASE_NAME:-devhub}
+    ports:
+      - '${DATABASE_PORT:-5432}:5432'
+    volumes:
+      - devhub_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER:-admin}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  dev-hub-web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${DATABASE_USER:-admin}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-admin}
+      DATABASE_NAME: ${DATABASE_NAME:-devhub}
+      DATABASE_SSLMODE: ${DATABASE_SSLMODE:-disable}
+      DATABASE_SCHEMA: ${DATABASE_SCHEMA:-dev-hub}
+      NODE_ENV: production
+      CRON_SECRET: ${CRON_SECRET:-change-me}
+      ALLOWED_REMOTE_ORIGINS: ${ALLOWED_REMOTE_ORIGINS:-}
+    ports:
+      - '3000:3000'
+
+  dev-hub-worker:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${DATABASE_USER:-admin}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-admin}
+      DATABASE_NAME: ${DATABASE_NAME:-devhub}
+      DATABASE_SSLMODE: ${DATABASE_SSLMODE:-disable}
+      DATABASE_SCHEMA: ${DATABASE_SCHEMA:-dev-hub}
+      NODE_ENV: production
+      HEALTH_RETENTION_DAYS: ${HEALTH_RETENTION_DAYS:-30}
+    command: ['pnpm', 'worker:health']
+
+volumes:
+  devhub_pgdata:
